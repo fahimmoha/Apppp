@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLCI App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: url('./images/image.png') no-repeat center center fixed;
+            background-size: cover;
+            color: rgb(128, 79, 0); /* Maroon theme */
+            line-height: 1.6;
+        }
+
+        /* General Layout */
+        h1, h2 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to right, #800000, #a52a2a);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out, background 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background: #600000; /* Darker maroon */
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .container {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            border-radius: 10px;
+            max-width: 90%;
+            margin: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #800000;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: white;
+            font-size: 1.2rem;
+            text-decoration: none;
+            flex-grow: 1; /* Allow the home button to grow and center */
+            text-align: center; /* Center text */
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: flex; /* Always show hamburger button */
+            flex-direction: column;
+            cursor: pointer;
+            margin-right: 20px; /* Align hamburger to the left */
+        }
+
+        .hamburger div {
+            width: 30px;
+            height: 4px;
+            background-color: white;
+            margin: 4px 0;
+            transition: 0.4s;
+        }
+
+        .menu {
+            display: none;
+            flex-direction: column; /* Ensure items are stacked vertically */
+            background-color: rgba(128, 79, 0, 0.9);
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            max-width: 250px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            padding: 10px 0;
+        }
+
+        .menu h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .menu a {
+            color: #ffffff; /* Set the color to white for all menu links */
+            padding: 15px 20px; /* Add padding for easier touch navigation */
+            text-decoration: none;
+            text-align: left; /* Align text to the left */
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: block; /* Ensure each link takes up the full width */
+        }
+
+        .menu a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .menu a:last-child {
+            background-color: rgba(255, 255, 255, 0.2); /* Slightly darker for "Close" */
+            margin-top: 10px;
+            border-radius: 0 0 5px 5px; /* Rounded bottom */
+            color: #ffffff;
+        }
+
+        /* Content Section */
+        .content {
+            margin-top: 60px;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+            padding: 20px; /* Add padding for better spacing */
+            border-radius: 10px; /* Rounded corners */
+        }
+
+        .uploaded-links {
+            margin-top: 20px;
+        }
+
+        .uploaded-links a {
+            display: block;
+            color:White;
+            text-decoration: none;
+            margin: 5px 0;
+        }
+
+        .uploaded-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Change text color for content sections */
+        .content h2, .content p {
+            color: white; /* Change the color of headings and paragraphs to white */
+            margin-bottom: 15px; /* Add space below headings and paragraphs */
+        }
+
+        .content h2 {
+            font-size: 1.8rem; /* Increase heading size */
+        }
+
+        .content p {
+            font-size: 1.2rem; /* Increase paragraph size */
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #920b0b;
+            color: #fff;
+            padding: 20px 10%;
+            font-family: Arial, sans-serif;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+        }
+
+        .footer-section h3 {
+            color: #ffa500;
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin: 5px 0;
+        }
+
+        .footer-section ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer-section ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: flex-start; /* Align icons to the left */
+            margin-top: 10px; /* Space above the icons */
+        }
+
+        .social-icons a {
+            color: #fff; /* White color for icons */
+            font-size: 20px; /* Size of the icons */
+            margin-right: 10px; /* Space between icons */
+            text-decoration: none; /* Remove underline */
+        }
+
+        .social-icons a:hover {
+            color: #ffa500; /* Change color on hover */
+        }
+
+        .donate-btn {
+            background-color: #008000;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .donate-btn:hover {
+            background-color: #006400;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 20px;
+            border-top: 1px solid #555;
+            padding-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+    <script defer="" data-domain="dlci.tiiny.site" src="https://analytics.tiiny.site/js/plausible.js"></script>
+    <script type="text/javascript" src="https://tiiny.host/ad-script.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="hamburger" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <a href="javascript:void(0)" onclick="navigateTo('homeScreen')"><i class="fas fa-home"></i> Home</a>
+    </div>
+
+    <!-- Hamburger Menu -->
+    <div id="menu" class="menu">
+        <h3>Menu</h3>
+        <a href="javascript:void(0)" onclick="navigateTo('NaturalResourceManagementScreen')">Natural Resource Management</a>
+        <a href="javascript:void(0)" onclick="navigateTo('ClimateChangeResilienceScreen')">Climate Change Resilience</a>
+        <a href="javascript:void(0)" onclick="navigateTo('PolicyAdvocacyScreen')">Policy & Advocacy</a>
+        <a href="javascript:void(0)" onclick="navigateTo('PastoralistLegislationScreen')">Pastoralist Legislation</a>
+        <a href="javascript:void(0)" onclick="toggleMenu()">Close</a>
+    </div>
+
+    <!-- Content -->
+    <div id="homeScreen" class="content">
+        <h1>Welcome to the DLCI App</h1>
+        <img src="https://dlci.tiiny.site/images/image%20copy.png" alt="DLCI Logo" style="display: block; margin: 0 auto; max-width: 300px;">
+        <h2>Vision</h2>
+        <p>Communities of the drylands are empowered and at the centre of all development interventions.</p>
+        <h2>Mission</h2>
+        <p>Working with all stakeholders to enhance the formulation & implementation of policies that are friendly to the dryland and indigenous communities in the Horn of Africa.</p>
+        <h2>About Us</h2>
+        <p>The Drylands Learning and Capacity Building Initiative (DLCI) was registered as a Non-Governmental Organization (NGO) in Kenya in 2016. It began as an informal advocacy platform in 2008 and was established as a Regional Learning and Advocacy Programme (REGLAP) in 2014 by a consortium of international NGOs working in the Horn of Africa. DLCI aims to improve policy and practice in Kenya. It is led, managed, and run by people from the dryland communities.</p>
+    </div>
+
+    <!-- Natural Resource Management -->
+    <div id="NaturalResourceManagementScreen" class="content hidden">
+        <h2>Natural Resource Management</h2>
+        <button onclick="toggleLinks('policyTrackingLinksNatural')">Policy Tracking</button>
+        <button onclick="toggleLinks('knowledgeManagementLinksNatural')">Knowledge Management</button>
+        
+        <div class="uploaded-links hidden" id="policyTrackingLinksNatural">
+            <h3>Policy Documents</h3>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/08/Senate-Bill-no6-on-the-Natural-resources-benefit-sharing-bill-2022.pdf">The Natural Resources (Benefit Sharing) Bill. 2023</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/03/NaturalResources_ClassesofTransactionsSubjecttoRatification_Act_No41of2016.pdf">Natural Resources (Classes of Transactions Subject to Ratification) Act, 2016</a>
+            <a href="https://kenyalaw.org/kl/fileadmin/pdfdownloads/bills/2017/EnergyBill_2017.pdf">The Act consolidates the laws relating to energy, to provide for National and County Government functions in relation to energy, to provide for the establishment, powers and functions of the energy sector,</a>
+            <a href="https://kenyalaw.org/kl/fileadmin/pdfdownloads/bills/2014/NaturalResources_Benefit_Sharing_Bill__2014.pdf">The aim of the bill is to establish a system of benefit sharing in resource exploitation between resource exploiters, the National government, County governments and local communities; to establish the Natural Resources Benefits Sharing Authority</a>
+            <a href="https://kenyalaw.org/kl/fileadmin/pdfdownloads/bills/2017/Petroleum_Exploration_DevelopmentandProductionBill_2017.pdf">Provides a framework for the contracting, exploration and development of petroleum together with production of petroleum discovered within the licensed petroleum exploration blocks. The Bill also provides a framework for cessation of upstream petroleum operations.</a>
+            <a href="https://kenyalaw.org/kl/fileadmin/pdfdownloads/bills/2017/WildlifeConservationandManagement_Amendment_Bill_2017.pdf">The Bill seeks to amend the Wildlife Conservation and Management (Amendment) Bill, 2013, and provide clarity for effective implementation of the Act.</a>
+            <a href="https://kenyalaw.org/kl/fileadmin/pdfdownloads/bills/2017/FoodSecurityBill_2017.pdf">Food Security Bill, 2017</a>
+            <a href="https://kenyalaw.org/kl/fileadmin/pdfdownloads/Acts/IrrigationActCap346.pdf">The Act is intended to support sustainable food production, establishing the National Irrigation Development Authority (NIDA) and outlining the role of national and county governments in facilitating irrigation activities in the country.</a>
+            <a href="http://www.parliament.go.ke/sites/default/files/2019-04/Livestock%20%26%20Livestock%20Products%20Marketing%20Board%20Bill%2C%202019%20%282%29.pdf">Livestock and LivestockProductsMarketingBoard Bill,2019</a>
+        </div>
+        
+        <div class="uploaded-links hidden" id="knowledgeManagementLinksNatural">
+            <h3>Knowledge Documents</ ```html
+            <h3>Knowledge Documents</h3>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2025/01/Gazette-Vol.-131-Main-.pdf">The Kenyan Gazzette Volume 131 (Gazette Notices 10357, 10358)</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/02/20200804042701219.pdf">Analysis of the Land Value (Amendment) Act</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/02/20200804040826365.pdf">Social-ecological change in the Omo-Turkana basin</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/04/20200803111337762.pdf">Making Markets Work for the Poor (M4P) Approach and Smallholder Irrigation Farming</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/04/20200804044137408.pdf">EXPLORATORY IRRIGATION WATER SUITABILITY STUDY</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200804043028952.pdf">POLICY BRIEF: CRITICAL ISSUES ON COMMUNITY LAND LEGISLATION IN KENYA</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/07/20200804043541545.pdf">The Community Land Act in Kenya: Opportunities and Challenges for Communities</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803110440599.pdf">THE COMMUNITY LAND BILL, 2015</a>
+        </div>
+    </div>
+
+    <!-- Climate Change Resilience -->
+    <div id="ClimateChangeResilienceScreen" class="content hidden">
+        <h2>Climate Change Resilience</h2>
+        <button onclick="toggleLinks('policyTrackingLinksClimate')">Policy Tracking</button>
+        <button onclick="toggleLinks('knowledgeManagementLinksClimate')">Knowledge Management</button>
+        
+        <div class="uploaded-links hidden" id="policyTrackingLinksClimate">
+            <h3>Policy Documents</h3>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2024/03/ken220092.pdf">The Climate Change (Amendment) Act, no. 9 of 2023.</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/08/20200804125655656-1.pdf">THE LIVESTOCK AND LIVESTOCK PRODUCTS MARKETING BOARD BILL, 2019</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/07/20200804124247315.pdf">TECHNICAL BRIEF: How shared resource use management through reciprocal grazing agreements can increase resilience</a>
+            <a href="#">Climate Change Policy 4</a>
+            <a href="#">Climate Change Policy 5</a>
+            <a href="#">Climate Change Policy 6</a>
+            <a href="#">Climate Change Policy 7</a>
+            <a href="#">Climate Change Policy 8</a>
+            <a href="#">Climate Change Policy 9</a>
+            <a href="#">Climate Change Policy 10</a>
+        </div>
+
+        <div class="uploaded-links hidden" id="knowledgeManagementLinksClimate">
+            <h3>Knowledge Documents</h3>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803104345535.pdf">Resilience Focus</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/02/20220411120947620.pdf">Outsmarting La Nina</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200804042940748.pdf">Rethinking land reform in Africa new ideas, opportunities and challenges</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/07/20220324123154254.pdf">Valuing variability</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803105956702.pdf">Where have all the nomads gone? Fifty years of statistical and demographic invisibilities of African mobile pastoralists Sara Randall Abstract Open Access</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803105907637.pdf">National Policy for the Sustainable Development of Northern Kenya and other Arid Lands</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803105714464.pdf">Ending Drought Emergencies: Common Programme Framework for Peace and Security</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803105621237.pdf">Ending Drought Emergencies: Common Programme Framework for Climate-proofed Infrastructure</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803105016540.pdf">WORKING TOGETHER TO END DROUGHT EMERGENCIES IN KENYA</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803104448841.pdf">The need for participatory land use planning in building resilience of ASAL communities in Kenya</a>
+        </div>
+    </div>
+
+    <!-- Policy Advocacy -->
+    <div id="PolicyAdvocacyScreen" class="content hidden">
+        <h2>Policy Advocacy</h2>
+        <button onclick="toggleLinks('policyTrackingLinksPolicyAdvocacy')">Policy Tracking</button>
+        <button onclick="toggleLinks('knowledgeManagementLinksPolicyAdvocacy')">Knowledge Management</button>
+        
+        <div class="uploaded-links hidden" id="policyTrackingLinksPolicyAdvocacy">
+            <h3>Policy Documents</h3>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/02/PPG-Scorecard-for-the-12th-Parliament.pdf">PPG Scorecard for the 12th Parliament</a>
+            <a href="https://kenyalaw.org/kl/fileadmin/pdfdownloads/bills/2017/EnergyBill_2017.pdf">The Act consolidates the laws relating to energy, to provide for National and County Government functions in relation to energy, to provide for the establishment, powers and functions of the energy sector,</a>
+            <a href="https://kenyalaw.org/kl/fileadmin/pdfdownloads/bills/2014/NaturalResources_Benefit_Sharing_Bill__2014.pdf">The aim of the bill is to establish a system of benefit sharing in resource exploitation between resource exploiters, the National government, County governments and local communities; to establish the Natural Resources Benefits Sharing Authority</a> 
+            <a href="https://kenyalaw.org/kl/fileadmin/pdfdownloads/bills/2017/Petroleum_Exploration_DevelopmentandProductionBill_2017.pdf">Provides a framework for the contracting, exploration and development of petroleum together with production of petroleum discovered within the licensed petroleum exploration blocks. The Bill also provides a framework for cessation of upstream petroleum operations.</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/07/20200804022008940.pdf">Advocacy and Campaigning Course Toolkit</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/07/20200804043710355.pdf">SUMMARY BRIEF: Opportunities to promote integrated planning in the drylands of Kenya, Ethiopia and Uganda</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200804043028952.pdf">POLICY BRIEF: CRITICAL ISSUES ON COMMUNITY LAND LEGISLATION IN KENYA</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803081614739.pdf">Get to Know Pastoralism - It works!</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803060114471.pdf">DISCUSSION BRIEF: Public participation in the ASALs: It is just ticking the box?</a>
+            <a href ="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803055949850.pdf">Draft Brief : Summary of the Community Land Regulations</a>
+        </div>
+
+        <div class="uploaded-links hidden" id="knowledgeManagementLinksPolicyAdvocacy">
+            <h3>Knowledge Documents</h3>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/02/PPG-Scorecard-for-the-12th-Parliament.pdf">PPG Scorecard for the 12th Parliament</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/02/20200804041840906.pdf">Conflict in the arid and semi arid areas</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/02/20200804035614178.pdf">Factors hindering sustainable financial inclusion of rural women in Kenya, a case of Garissa County, Kenya</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/02/20200804041646732.pdf">County public participation guidelines</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803104448841.pdf">The need for participatory land use planning in building resilience of ASAL communities in Kenya</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803110530498.pdf">COMMUNICATION & INFORMATION FOR ADVOCACY IN KAJIADO COUNTY</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803110440599.pdf">THE COMMUNITY LAND BILL, 2015</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803110651817.pdf">OVERVIEW OF COMMUNICATION STRATEGY IN ISIOLO COUNTY</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/10/20200804011313487.pdf">Framework for Improved Integrated Education in the Arid and Semi-Arid Lands of Kenya</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803081614739.pdf">Get to Know Pastoralism - It works!</a>
+        </div>
+    </div>
+
+    <!-- Pastoralist Legislation -->
+    <div id="PastoralistLegislationScreen" class="content hidden">
+        <h2>Pastoralist Legislation</h2>
+        <button onclick="toggleLinks('policyTrackingLinksPastoralist')">Policy Tracking</button>
+        
+        <div class="uploaded-links hidden" id="policyTrackingLinksPastoralist">
+            <h3>Policy Documents</h3>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200804043028952.pdf">POLICY BRIEF: CRITICAL ISSUES ON COMMUNITY LAND LEGISLATION IN KENYA</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803081614739.pdf">Get to Know Pastoralism - It works!</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/05/20200803060114471.pdf">DISCUSSION BRIEF: Public participation in the ASALs: It is just ticking the box?</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2025/02/Vol-12_042957_250117_181246.pdf">The National Livestock Development and Promotion Service Order, 2016</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2024/07/THE-LIVESTOCK-BILL-2024.pdf">Livestock Bill, 2024.</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2024/03/ken220092.pdf">The Climate Change (Amendment) Act, no. 9 of 2023.</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/08/Senate-Bill-no6-on-the-Natural-resources-benefit-sharing-bill-2022.pdf">The Natural Resources (Benefit Sharing) Bill. 2023</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/08/20200804125655656-1.pdf">THE LIVESTOCK AND LIVESTOCK PRODUCTS MARKETING BOARD BILL, 2019</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/08/LandValueAmendmentAct2019.pdf">Land Value Index Laws (Amendment) Bill, August 2019</a>
+            <a href="https://dlci-hoa.org/wp-content/uploads/2023/03/EnergyBill_2017.pdf">Energy Act, 2019</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Vision</a></li>
+                    <li><a href="#">Mission</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Resources</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Our Contacts</h3>
+                <p>Silverpool Office Suites, Block A1, Jabavu Lane, Hurlingham, Nairobi, Kenya</p>
+                <p><i class="fa fa-envelope"></i> info@dlci-hoa.org</p>
+                <p><i class="fa fa-phone"></i> DLCI: +254 791 057 443</p>
+                <p><i class="fa fa-phone"></i> PPG: +254 708 424 412</p>
+            </div>
+            <div class="footer-section">
+                <h3>Social Media</h3>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/profile.php?id=100063527860287" target="_blank">
+                        <img src="C:\Users\FAHIM\APp\images\image copy 2.png" alt="Facebook" style="width: 30px; height: 30px;">
+                    </a>
+                    <a href="https://x.com/dlci_kenya" target="_blank">
+                        <img src="C:\Users\FAHIM\APp\images\image copy 6.png" alt="Twitter" style="width: 30px; height: 30px;">
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCR0iYuktnNuxhGzdJdfVLHw" target="_blank">
+                        <img src="C:\Users\FAHIM\APp\images\image copy 3.png" alt="YouTube" style="width: 30px; height: 30px;">
+                    </a>
+                    <a href="https://www.linkedin.com/company/drylands-learning-and-capacity-building-initiative/" target="_blank">
+                        <img src="C:\Users\FAHIM\APp\images\image copy 7.png" alt="LinkedIn" style="width: 30px; height: 30px;">
+                    </a>
+                </div>
+                <button class="donate-btn">DONATE <i class="fa fa-paypal"></i></button>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 - Drylands Learning and Capacity Building Initiative</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Functions -->
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function navigateTo(screenId) {
+            const screens = document.querySelectorAll('.content');
+            screens.forEach(screen => screen.classList.add('hidden'));
+            const screen = document.getElementById(screenId);
+            if (screen) screen.classList.remove('hidden');
+            toggleMenu(); // Close the menu after navigation
+        }
+
+        function toggleLinks(linkId) {
+            const links = document.getElementById(linkId);
+            links.classList.toggle('hidden');
+        }
+    </script>
+
+</body>
+</html> 
